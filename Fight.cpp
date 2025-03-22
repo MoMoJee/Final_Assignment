@@ -163,6 +163,7 @@ int fight(int *last_time_HP)//一整个打架流程，默认返回的是输赢的布尔值，last_tim
             }
             continue;
         }
+
         ATTACK = FightTempOpponentStats.DEF * FightTempPlayerStats.ATK * charged_value;
 
         FightTempOpponentStats.HP = FightTempOpponentStats.HP + 0.5 - ATTACK;

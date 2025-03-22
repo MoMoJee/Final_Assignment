@@ -4,6 +4,7 @@
 #include <string.h>
 #include <conio.h> // 用于 _kbhit() 和 _getch()
 #include<Windows.h>
+#include <Xinput.h>
 
 bool develop_mode = 0;
 int f_code = 0;//由于cc是main循环调用，这里只能强行给他加生命周期了
@@ -36,7 +37,14 @@ int Console_Command
 	const char* introduction[MAX_BUTTONS] = {
 	NULL,
 	NULL,
-	"强烈建议使用，尤其剧情模式，先进去看看怪物的特性，然后ESC出来配置技能，对症下药"
+	"强烈建议使用，尤其剧情模式，先进去看看怪物的特性，然后ESC出来配置技能，对症下药",
+	"仅限开发者使用",
+	NULL,
+	NULL,
+	NULL,
+	"无尽模式中，每个回合你的血量不会恢复，但获得的奖励会越来越多！",
+	"选择每个回合中可以使用一次的技能",
+	"可用状态为1（非战斗状态）的技能可用作升级"
 	};
 	if (PLAYER_SAVE.Story_Line_Coordinates[STORY_LINE_CODE] < 2)
 	{
@@ -49,7 +57,8 @@ int Console_Command
 		cc_menu_arr[5] = -5;
 		cc_menu_arr[6] = -6;
 		cc_menu_arr[7] = -7;
-		introduction[5] = "商店功能在完成剧情第五关之后开放";
+		introduction[5] =
+			"商店功能在完成剧情第五关之后开放";
 		introduction[6] = "训练场功能在完成剧情第五关之后开放";
 		introduction[7] = "无尽模式在完成剧情第五关之后开放";
 
@@ -479,5 +488,4 @@ int menu(int num_buttons, const char* title, int index[MAX_BUTTONS], const char*
 			}
 		}
 	}
-
 }

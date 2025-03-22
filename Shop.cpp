@@ -64,33 +64,50 @@ Start_Shopping:
 
 			// printf("你确定要花费%d个金币购买这个道具吗？\n你现在有%d个金币，买完还有%d个\n", final_price, PLAYER.Money, PLAYER.Money - final_price);
 
-			int shop_menu_arr[MAX_BUTTONS];
-			char shop_menu_buttons[MAX_BUTTONS][20];
-			memset(shop_menu_buttons, 0, sizeof(shop_menu_buttons));
-			const char* const_shop_menu_buttons[MAX_BUTTONS];
-			const char* introduction[MAX_BUTTONS] = { NULL };
-			int inum = 0;
-			final_price = 0;
-			for (inum; inum * SKILL_PROPS_LIST[choose].Price <= PLAYER.Money; inum++)
-			{
-				shop_menu_arr[inum] = inum;
-				snprintf(shop_menu_buttons[inum], sizeof(shop_menu_buttons[inum]), "%d", inum * SKILL_PROPS_LIST[choose].Price);
-				const_shop_menu_buttons[inum] = shop_menu_buttons[inum];
-			}
+			if (!develop_mode) {
+				int shop_menu_arr[MAX_BUTTONS];
+				char shop_menu_buttons[MAX_BUTTONS][20];
+				memset(shop_menu_buttons, 0, sizeof(shop_menu_buttons));
+				const char* const_shop_menu_buttons[MAX_BUTTONS];
+				const char* introduction[MAX_BUTTONS] = { NULL };
+				int inum = 0;
+				final_price = 0;
+				for (inum; inum * SKILL_PROPS_LIST[choose].Price <= PLAYER.Money; inum++)
+				{
+					shop_menu_arr[inum] = inum;
+					snprintf(shop_menu_buttons[inum], sizeof(shop_menu_buttons[inum]), "%d", inum * SKILL_PROPS_LIST[choose].Price);
+					const_shop_menu_buttons[inum] = shop_menu_buttons[inum];
+				}
 
-			int buy_num = menu(inum, "您要购买几个这个技能？", shop_menu_arr, const_shop_menu_buttons, introduction, 2);
-			if ((!buy_num) || buy_num == -10999)
-			{
-				printf("那您再看看\n");
-				goto Start_Shopping;
+				int buy_num = menu(inum, "您要购买几个这个技能？", shop_menu_arr, const_shop_menu_buttons, introduction, 2);
+				if ((!buy_num) || buy_num == -10999)
+				{
+					printf("那您再看看\n");
+					goto Start_Shopping;
+				}
+				else
+				{
+					final_price = SKILL_PROPS_LIST[choose].Price * buy_num;
+					PLAYER.Money -= final_price;
+					printf("你花费了%d个金币购买了%d个这个道具！\n", final_price, buy_num);
+					PLAYER.PROPS[99][0] = choose;
+					PLAYER.PROPS[99][1] = buy_num;
+					cleanAndOrganizeProps();
+					PLAYER_SAVE.Player_Stats = PLAYER;
+					SaveSaveFile(&PLAYER_SAVE, &save_count);
+					clearInputBuffer();
+					printf("按任意键继续\n");
+					while (!_kbhit()) {}
+				}
+
+
 			}
-			else
-			{
-				final_price = SKILL_PROPS_LIST[choose].Price * buy_num;
-				PLAYER.Money -= final_price;
-				printf("你花费了%d个金币购买了%d个这个道具！\n", final_price, buy_num);
+			else {
+				final_price = SKILL_PROPS_LIST[choose].Price;
+				PLAYER.Money -= 0;
+				printf("你花费了%d（开发者模式，0元购）个金币购买了%d个这个道具！\n", final_price, 1);
 				PLAYER.PROPS[99][0] = choose;
-				PLAYER.PROPS[99][1] = buy_num;
+				PLAYER.PROPS[99][1] = 1;
 				cleanAndOrganizeProps();
 				PLAYER_SAVE.Player_Stats = PLAYER;
 				SaveSaveFile(&PLAYER_SAVE, &save_count);
@@ -98,6 +115,8 @@ Start_Shopping:
 				printf("按任意键继续\n");
 				while (!_kbhit()) {}
 			}
+
+
 		}
 
 	}
